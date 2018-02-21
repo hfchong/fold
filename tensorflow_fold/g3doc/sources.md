@@ -9,9 +9,9 @@ source ./foo/bin/activate
 pip install pip --upgrade
 pip install wheel --upgrade
 pip install numpy --upgrade
-git clone --recurse-submodules https://github.com/tensorflow/fold
+git clone --recursive git@github.com:hfchong/fold.git
 cd fold/tensorflow
-./configure
+tensorflow/tools/ci_build/builds/configured GPU
 cd ..
 ```
 
@@ -48,7 +48,20 @@ pip install nltk --upgrade
 Build a pip wheel for Fold like so:
 
 ```
-bazel build --config=opt //tensorflow_fold/util:build_pip_package
+export PYTHON_BIN_PATH=/usr/bin/python
+export TF_NEED_JEMALLOC=0
+export TF_NEED_GCP=0
+export TF_NEED_CUDA=0
+export TF_NEED_HDFS=0
+export TF_NEED_S3=0
+export TF_NEED_OPENCL=0
+export TF_NEED_GDR=0
+export TF_ENABLE_XLA=0
+export TF_NEED_VERBS=0
+export TF_NEED_MPI=0
+
+bazel --output_user_root=/tmp --bazelrc=tensorflow/.tf_configure.bazelrc build -c opt --config=cuda --copt=-march="haswell" --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" //tensorflow_fold/util:build_pip_package
+bazel --output_user_root=/tmp --bazelrc=tensorflow/.tf_configure.bazelrc build -c opt --copt=-march="haswell" --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" //tensorflow_fold/util:build_pip_package
 ./bazel-bin/tensorflow_fold/util/build_pip_package /tmp/fold_pkg
 ```
 

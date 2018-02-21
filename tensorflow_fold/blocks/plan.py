@@ -391,7 +391,7 @@ class Plan(object):
     report_loss: A callback for training and eval jobs to report losses.
     report_done: A callback called by the eval jobs when they finish.
   """
-  mode_keys = tf.contrib.learn.ModeKeys
+  mode_keys = tf.estimator.ModeKeys
 
   @classmethod
   def create(cls, mode):

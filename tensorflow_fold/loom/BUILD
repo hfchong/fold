@@ -16,7 +16,7 @@ load(
     "fold_py_library",
     "fold_py_test",
     "fold_py_wrap_cc",
-    "fold_tf_op_py",
+    "fold_tf_op_py"
 )
 
 package(

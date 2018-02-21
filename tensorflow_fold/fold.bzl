@@ -101,7 +101,7 @@ def fold_py_extension(name, srcs=[], outs=[], deps=[]):
                     alwayslink = 1)
   for out in outs:
     native.cc_binary(name=outs[0],
-                     srcs=[],
+                     srcs=["@org_tensorflow//tensorflow:libtensorflow_framework.so"],
                      linkshared=1,
                      deps=[":" + name + "_cc"])
 
@@ -201,7 +201,8 @@ def fold_py_wrap_cc(name, srcs, swig_includes=[], deps=[], copts=[], **kwargs):
 
   native.cc_binary(
       name=cc_library_name,
-      srcs=[module_name + ".cc"],
+      srcs=[module_name + ".cc",
+            "@org_tensorflow//tensorflow:libtensorflow_framework.so"],
       copts=copts + ["-Wno-self-assign", "-Wno-write-strings"],
       linkopts=[],
       linkstatic=1,
@@ -217,7 +218,7 @@ def fold_tf_op_py(name, srcs, cc_deps=[], py_deps=[]):
   so_name = "_" + name + ".so"
   fold_cc_binary(
       name=so_name,
-      srcs = [],
+      srcs = ["@org_tensorflow//tensorflow:libtensorflow_framework.so"],
       linkshared = 1,
       linkstatic = 1,
       deps=cc_deps)

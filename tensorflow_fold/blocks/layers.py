@@ -360,7 +360,7 @@ class Embedding(TensorToTensorLayer):
   """
 
   def __init__(self, num_buckets, num_units_out, initializer=None, name=None,
-               trainable=True, mod_inputs=True):
+               trainable=True, mod_inputs=True, use_cpu=True):
     """Initializes the layer.
 
     Args:
@@ -376,6 +376,8 @@ class Embedding(TensorToTensorLayer):
         variable scope where the variables for the layer live.
       trainable: Whether or not to make the weights trainable.
       mod_inputs: Whether or not to mod the input by the number of buckets.
+      use_cpu: Whether to use cpu (Adagrad seems to work only with cpu for
+        sentiment)
 
     Raises:
       ValueError: If the shape of `weights` is not
@@ -399,6 +401,7 @@ class Embedding(TensorToTensorLayer):
     self._num_units_out = num_units_out
     self._trainable = trainable
     self._mod_inputs = bool(mod_inputs)
+    self._use_cpu = use_cpu
     super(Embedding, self).__init__(
         output_type=tdt.TensorType([num_units_out]), name_or_scope=name)
 
@@ -414,9 +417,20 @@ class Embedding(TensorToTensorLayer):
       self._cast = True
     else:
       self._cast = False
-    self._weights = tf.get_variable(
-        'weights', self._weights_shape, initializer=self._initializer,
-        trainable=self._trainable)
+
+    if self._use_cpu:
+        with tf.device('/cpu:0'):
+            self._weights = tf.get_variable(
+                'weights',
+                self._weights_shape,
+                initializer=self._initializer,
+                trainable=self._trainable)
+    else:
+        self._weights = tf.get_variable(
+                'weights',
+                self._weights_shape,
+                initializer=self._initializer,
+                trainable=self._trainable)
 
   @property
   def weights(self):
@@ -667,7 +681,13 @@ def get_local_arguments(fun, is_method=False):
 
   args = [lvals[k] for k in arg_names]
   kwargs_a = [(k, lvals[k], d) for (k, d) in zip(kwarg_names, argspec.defaults)]
-  kwargs = [(k, v) for (k, v, d) in kwargs_a if v != d]
+  kwargs = []
+  for k, v, d in kwargs_a:
+    if type(v) == np.ndarray:
+        if np.any(v != d):
+            kwargs.append((k, v))
+    elif v != d:
+        kwargs.append((k, v))
 
   if is_method: args = args[1:]   # strip off the self argument
   return (args, kwargs)

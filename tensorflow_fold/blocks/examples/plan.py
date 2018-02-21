@@ -84,7 +84,7 @@ class Plan(object):
     rundir: A string; the parent directory of logdir, shared between training
       and eval jobs for the same model.
   """
-  mode_keys = tf.contrib.learn.ModeKeys
+  mode_keys = tf.estimator.ModeKeys
 
   @classmethod
   def create_from_flags(cls, setup_plan_fn):
