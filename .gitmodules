@@ -1,7 +1,7 @@
 [submodule "tensorflow"]
 	path = tensorflow
 	url = https://github.com/tensorflow/tensorflow
-	branch = r1.5
+	branch = r1.12
 [submodule "abseil-cpp"]
 	path = abseil-cpp
 	url = https://github.com/abseil/abseil-cpp.git
