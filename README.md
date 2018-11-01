@@ -1,3 +1,9 @@
+# Updates
+
+TensorFlow Fold has been updated to work with TensorFlow (v1.12.0-rc2). You must build from source or run Fold via a Docker image 
+(see [instructions](https://github.com/datagovsg/tensorflow-sentiment-tutorial)). For GPU support via the Docker image, this has been
+tested with an NVIDIA GTX 1070 GPU card (driver version>=410.XX) using [nvidia-docker2](https://github.com/NVIDIA/nvidia-docker) package.
+
 # TensorFlow Fold
 
 TensorFlow Fold is a library for
@@ -16,7 +22,7 @@ input it receives, and can be executed efficiently by TensorFlow.
 * [Quick Start Notebook](tensorflow_fold/g3doc/quick.ipynb)
 * [Documentation](tensorflow_fold/g3doc/index.md)
 
-![animation](tensorflow_fold/g3doc/animation.gif)  
+![animation](tensorflow_fold/g3doc/animation.gif)
 
 This animation shows a [recursive neural network](https://en.wikipedia.org/wiki/Recursive_neural_network) run with dynamic batching. Operations of the same type appearing at the same depth in the computation graph (indicated by color in the animiation) are batched together regardless of whether or not they appear in the same parse tree. The [Embed](tensorflow_fold/g3doc/py/td.md#td.Embedding) operation converts [words to vector representations](https://www.tensorflow.org/tutorials/word2vec/). The fully connected ([FC](tensorflow_fold/g3doc/py/td.md#td.FC)) operation combines word vectors to form vector representations of phrases. The output of the network is a vector representation of an entire sentence.  Although only a single parse tree of a sentence is shown, the same network can run, and batch together operations, over multiple parse trees of arbitrary shapes and sizes. The TensorFlow `concat`, `while_loop`, and `gather` ops are created once, prior to variable initialization, by [Loom](tensorflow_fold/g3doc/py/loom.md), the low-level API for TensorFlow Fold.
 
